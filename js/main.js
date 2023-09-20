@@ -1,3 +1,5 @@
 (function () {
-  new Vditor("vditor");
+  new Vditor("vditor", {
+    cdn: "/vditor",
+  });
 })();
