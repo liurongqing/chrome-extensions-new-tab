@@ -1,0 +1,3 @@
+(function () {
+  new Vditor("vditor");
+})();

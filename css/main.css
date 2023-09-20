@@ -1,0 +1,22 @@
+body, div, aside, section {
+  padding: 0;
+  margin: 0;
+}
+.flex {
+  display: flex;
+}
+
+.w-48 {
+  width: 192px;
+}
+
+.w-screen {
+  width: 100vw;
+}
+.h-screen {
+  height: 100vh;
+}
+
+.bg-slate-50 {
+  background-color: rgb(248 250 252);
+}
