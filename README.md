@@ -8,6 +8,7 @@ Take quick notes
 1. 复制代码有问题，与导出 pdf 一样的错误 
 不支持over click内联写法
 1. ESC切换预览与即时编写
+默认预览 - 按哪个键，然后可以编辑 cmd + x 或是 ctrl + x编辑， esc 预览，
 
 
 1. 【暂时完成】导出 pdf 报错
