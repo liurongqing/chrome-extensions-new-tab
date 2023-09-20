@@ -30,3 +30,6 @@ section {
 .vditor-toolbar {
   padding-left: 10px!important;
 }
+.vditor-preview {
+  background-color: white;
+}
