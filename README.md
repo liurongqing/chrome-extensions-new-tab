@@ -5,9 +5,14 @@ Take quick notes
 # Todo
 1. 左侧未开发完成 
 1. 按钮切换未部署
-1. 预览样式乱
+1. 复制代码有问题，与导出 pdf 一样的错误 
 
 
-1. 导出 pdf 报错
+1. 【暂时完成】导出 pdf 报错
 https://github.dev/Vanessa219/vditor/blob/master/src/ts/toolbar/Export.ts 源码中先删除这段，在index.min.js中
 <button data-type="pdf">PDF</button>
+
+1.【暂时完成 】1. 预览样式乱
+把按钮添加去掉就可以了，原因未知
+// this.element.appendChild(i),
+
