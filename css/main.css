@@ -1,9 +1,15 @@
-body, div, aside, section {
+body,
+div,
+aside,
+section {
   padding: 0;
   margin: 0;
 }
 .flex {
   display: flex;
+}
+.flex-1 {
+  flex: 1 1 0%;
 }
 
 .w-48 {
@@ -19,4 +25,8 @@ body, div, aside, section {
 
 .bg-slate-50 {
   background-color: rgb(248 250 252);
+}
+
+.vditor-toolbar {
+  padding-left: 10px!important;
 }
