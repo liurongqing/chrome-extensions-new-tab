@@ -3,7 +3,9 @@
 Take quick notes in a new tab
 
 
-Created by [vditor](https://github.com/Vanessa219/vditor)
+---
+
+Using the [Vditor](https://github.com/Vanessa219/vditor) editor
 
 
 
