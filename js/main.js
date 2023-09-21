@@ -12,37 +12,36 @@
     //   }],
     // mode: "sv",
     // toolbar: ["preview", "export"],
-    // toolbar: [
-    //   {
-    //     name: "filelist",
-    //     tipPosition: "s",
-    //     tip: "成为赞助者",
-    //     icon: `<svg t="1695289971561" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7206" width="128" height="128"><path d="M994 483H208c-16.5 0-30 13.5-30 30s13.5 30 30 30h786c16.5 0 30-13.5 30-30s-13.5-30-30-30z" fill="#141414" p-id="7207"></path><path d="M35 513m-35 0a35 35 0 1 0 70 0 35 35 0 1 0-70 0Z" fill="#141414" p-id="7208"></path><path d="M994 831.875H214.992c-16.5 0-30 13.5-30 30s13.5 30 30 30H994c16.5 0 30-13.5 30-30s-13.5-30-30-30z" fill="#141414" p-id="7209"></path><path d="M35 862m-35 0a35 35 0 1 0 70 0 35 35 0 1 0-70 0Z" fill="#141414" p-id="7210"></path><path d="M214.992 194.125H994c16.5 0 30-13.5 30-30s-13.5-30-30-30H214.992c-16.5 0-30 13.5-30 30s13.5 30 30 30z" fill="#141414" p-id="7211"></path><path d="M35 164m-35 0a35 35 0 1 0 70 0 35 35 0 1 0-70 0Z" fill="#141414" p-id="7212"></path></svg>`,
-    //     click() {
-    //       alert("捐赠地址：https://ld246.com/sponsor");
-    //     },
-    //   },
-    //   {
-    //     name: "outline",
-    //     tip: "大纲",
-    //     tipPosition: "s",
-    //   },
-    //   {
-    //     name: "preview",
-    //     tip: "预览",
-    //     tipPosition: "s",
-    //     className: "flex-1",
-    //   },
-    //   {
-    //     name: "delete",
-    //     tip: 'xx'
-    //   },
-    //   {
-    //     name: "export",
-    //     tip: "导出",
-    //     tipPosition: "s",
-    //   },
-    // ],
+    toolbar: [
+      {
+        name: "filelist",
+        tipPosition: "s",
+        tip: "成为赞助者",
+        icon: `<svg t="1695289971561" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7206" width="128" height="128"><path d="M994 483H208c-16.5 0-30 13.5-30 30s13.5 30 30 30h786c16.5 0 30-13.5 30-30s-13.5-30-30-30z" fill="#141414" p-id="7207"></path><path d="M35 513m-35 0a35 35 0 1 0 70 0 35 35 0 1 0-70 0Z" fill="#141414" p-id="7208"></path><path d="M994 831.875H214.992c-16.5 0-30 13.5-30 30s13.5 30 30 30H994c16.5 0 30-13.5 30-30s-13.5-30-30-30z" fill="#141414" p-id="7209"></path><path d="M35 862m-35 0a35 35 0 1 0 70 0 35 35 0 1 0-70 0Z" fill="#141414" p-id="7210"></path><path d="M214.992 194.125H994c16.5 0 30-13.5 30-30s-13.5-30-30-30H214.992c-16.5 0-30 13.5-30 30s13.5 30 30 30z" fill="#141414" p-id="7211"></path><path d="M35 164m-35 0a35 35 0 1 0 70 0 35 35 0 1 0-70 0Z" fill="#141414" p-id="7212"></path></svg>`,
+        click() {
+          alert("捐赠地址：https://ld246.com/sponsor");
+        },
+      },
+      {
+        name: "outline",
+        tip: "大纲",
+        tipPosition: "s",
+      },
+      {
+        name: "preview",
+        tip: "预览",
+        tipPosition: "s",
+        className: "flex-1",
+      },
+      {
+        name: "delete",
+      },
+      {
+        name: "export",
+        tip: "导出",
+        tipPosition: "s",
+      },
+    ],
     preview: {
       theme: {
         current: "ant-design",
