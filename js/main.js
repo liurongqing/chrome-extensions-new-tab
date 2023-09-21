@@ -1,5 +1,5 @@
 (function () {
-  new Vditor("vditor", {
+  window.options = {
     // toolbar: [
     //   {
     //     hotkey: '⇧⌘S',
@@ -31,7 +31,8 @@
     },
     height: "100vh",
     // placeholder: "Take me notes in your new tab of browser."
-  });
+  };
+  new Vditor("vditor", window.options);
   // Vditor.setTheme('classic', 'ant-design', 'github')
   // Vditor.setContentTheme("ant-design");
   // Vditor.setCodeTheme("github");
