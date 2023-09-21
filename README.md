@@ -1,8 +1,4 @@
 # chrome-extensions-new-tab
-Take quick notes
-
-
-# New Tab Quick Notes
 
 Take quick notes in a new tab
 
