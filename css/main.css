@@ -31,6 +31,7 @@ section {
 }
 
 .vditor-toolbar {
+  display: flex;
   padding-left: 10px !important;
 }
 .vditor-ir pre.vditor-reset,
