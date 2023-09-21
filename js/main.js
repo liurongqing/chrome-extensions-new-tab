@@ -11,7 +11,19 @@
     //     click () {alert('捐赠地址：https://ld246.com/sponsor')},
     //   }],
     // mode: "sv",
-    // toolbar: ['export', 'preview'],
+    // toolbar: ["preview", "export"],
+    // toolbar: [
+    //   {
+    //     name: "preview",
+    //     tip: "预览",
+    //     tipPosition: 's',
+    //   },
+    //   {
+    //     name: 'export',
+    //     tip: '导出',
+    //     tipPosition: 's'
+    //   }
+    // ],
     preview: {
       theme: {
         current: "ant-design",
