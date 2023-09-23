@@ -1,10 +1,24 @@
 body,
 div,
 aside,
+ul,
+ol,
 section {
   padding: 0;
   margin: 0;
 }
+ul,
+ol {
+  list-style: none;
+}
+.menu-container ul li {
+  height: 90px;
+  box-sizing: border-box;
+  padding: 10px;
+  cursor: default;
+  border-bottom: 1px solid #ececec;
+}
+
 .flex {
   display: flex;
 }
@@ -12,6 +26,9 @@ section {
   flex: 1 1 0%;
 }
 
+.menu-container.w-0 {
+  width: 0;
+}
 .w-48 {
   width: 192px;
 }
@@ -23,15 +40,36 @@ section {
   height: 100vh;
 }
 
+.overflow-y-auto {
+  overflow-y: auto;
+}
+
 .bg-neutral-50 {
   background-color: rgb(250 250 250);
 }
-.bg-neutral-50.active {
+.bg-neutral-50 .active {
   background-color: rgb(238, 238, 238);
 }
 
+.menu-container {
+  transition: width 200ms;
+}
+/**
+ * 编辑器相关
+*/
+.vditor {
+  /* border: 1px solid #e8e8e8; */
+  /* border: 1px solid red; */
+  border: none;
+  border-left: 1px solid #e8e8e8;
+}
+.vditor-preview,
+.vditor-ir {
+  border-left: 1px solid #e8e8e8;
+}
 .vditor-toolbar {
   display: flex;
+  border-bottom: 1px solid #e8e8e8;
   padding-left: 10px !important;
 }
 .vditor-ir pre.vditor-reset,

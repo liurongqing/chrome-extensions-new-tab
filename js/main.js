@@ -1,17 +1,16 @@
 (function () {
+  const editIcon = `<?xml version="1.0" standalone="no"?>
+  <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 1024 1024">
+    <path d="M257.7 752c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 0 0 0-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 0 0 9.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9zm67.4-174.4L687.8 215l73.3 73.3-362.7 362.6-88.9 15.7 15.6-89zM880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32z"/>
+  </svg>`;
+
+  const previewIcon = `<?xml version="1.0" standalone="no"?>
+  <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 1024 1024">
+    <path d="M942.2 486.2C847.4 286.5 704.1 186 512 186c-192.2 0-335.4 100.5-430.2 300.3a60.3 60.3 0 0 0 0 51.5C176.6 737.5 319.9 838 512 838c192.2 0 335.4-100.5 430.2-300.3 7.7-16.2 7.7-35 0-51.5zM512 766c-161.3 0-279.4-81.8-362.7-254C232.6 339.8 350.7 258 512 258c161.3 0 279.4 81.8 362.7 254C791.5 684.2 673.4 766 512 766zm-4-430c-97.2 0-176 78.8-176 176s78.8 176 176 176 176-78.8 176-176-78.8-176-176-176zm0 288c-61.9 0-112-50.1-112-112s50.1-112 112-112 112 50.1 112 112-50.1 112-112 112z"/>
+  </svg>`;
+
   window.options = {
-    // toolbar: [
-    //   {
-    //     hotkey: '⇧⌘S',
-    //     name: 'sponsor',
-    //     tipPosition: 's',
-    //     tip: '成为赞助者',
-    //     className: 'right',
-    //     icon: '<svg t="1589994565028" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2808" width="32" height="32"><path d="M506.6 423.6m-29.8 0a29.8 29.8 0 1 0 59.6 0 29.8 29.8 0 1 0-59.6 0Z" fill="#0F0F0F" p-id="2809"></path><path d="M717.8 114.5c-83.5 0-158.4 65.4-211.2 122-52.7-56.6-127.7-122-211.2-122-159.5 0-273.9 129.3-273.9 288.9C21.5 562.9 429.3 913 506.6 913s485.1-350.1 485.1-509.7c0.1-159.5-114.4-288.8-273.9-288.8z" fill="#FAFCFB" p-id="2810"></path><path d="M506.6 926c-22 0-61-20.1-116-59.6-51.5-37-109.9-86.4-164.6-139-65.4-63-217.5-220.6-217.5-324 0-81.4 28.6-157.1 80.6-213.1 53.2-57.2 126.4-88.8 206.3-88.8 40 0 81.8 14.1 124.2 41.9 28.1 18.4 56.6 42.8 86.9 74.2 30.3-31.5 58.9-55.8 86.9-74.2 42.5-27.8 84.3-41.9 124.2-41.9 79.9 0 153.2 31.5 206.3 88.8 52 56 80.6 131.7 80.6 213.1 0 103.4-152.1 261-217.5 324-54.6 52.6-113.1 102-164.6 139-54.8 39.5-93.8 59.6-115.8 59.6zM295.4 127.5c-72.6 0-139.1 28.6-187.3 80.4-47.5 51.2-73.7 120.6-73.7 195.4 0 64.8 78.3 178.9 209.6 305.3 53.8 51.8 111.2 100.3 161.7 136.6 56.1 40.4 88.9 54.8 100.9 54.8s44.7-14.4 100.9-54.8c50.5-36.3 108-84.9 161.7-136.6 131.2-126.4 209.6-240.5 209.6-305.3 0-74.9-26.2-144.2-73.7-195.4-48.2-51.9-114.7-80.4-187.3-80.4-61.8 0-127.8 38.5-201.7 117.9-2.5 2.6-5.9 4.1-9.5 4.1s-7.1-1.5-9.5-4.1C423.2 166 357.2 127.5 295.4 127.5z" fill="#141414" p-id="2811"></path><path d="M353.9 415.6m-33.8 0a33.8 33.8 0 1 0 67.6 0 33.8 33.8 0 1 0-67.6 0Z" fill="#0F0F0F" p-id="2812"></path><path d="M659.3 415.6m-33.8 0a33.8 33.8 0 1 0 67.6 0 33.8 33.8 0 1 0-67.6 0Z" fill="#0F0F0F" p-id="2813"></path><path d="M411.6 538.5c0 52.3 42.8 95 95 95 52.3 0 95-42.8 95-95v-31.7h-190v31.7z" fill="#5B5143" p-id="2814"></path><path d="M506.6 646.5c-59.6 0-108-48.5-108-108v-31.7c0-7.2 5.8-13 13-13h190.1c7.2 0 13 5.8 13 13v31.7c0 59.5-48.5 108-108.1 108z m-82-126.7v18.7c0 45.2 36.8 82 82 82s82-36.8 82-82v-18.7h-164z" fill="#141414" p-id="2815"></path><path d="M450.4 578.9a54.7 27.5 0 1 0 109.4 0 54.7 27.5 0 1 0-109.4 0Z" fill="#EA64F9" p-id="2816"></path><path d="M256 502.7a32.1 27.5 0 1 0 64.2 0 32.1 27.5 0 1 0-64.2 0Z" fill="#EFAFF9" p-id="2817"></path><path d="M703.3 502.7a32.1 27.5 0 1 0 64.2 0 32.1 27.5 0 1 0-64.2 0Z" fill="#EFAFF9" p-id="2818"></path></svg>',
-    //     click () {alert('捐赠地址：https://ld246.com/sponsor')},
-    //   }],
-    // mode: "sv",
-    // toolbar: ["preview", "export"],
+    // mode: 'preview',
     toolbar: [
       {
         name: "filelist",
@@ -23,6 +22,8 @@
         </svg>
         `,
         click() {
+          const menu = document.querySelector(".menu-container");
+          menu.classList.toggle("w-0");
           // console.log('设置icon', )
           // const filelist = window.vditor.vditor.options.toolbar.find(item => item.name === 'filelist')
           // if(filelist) {
@@ -44,15 +45,25 @@
       },
       {
         name: "preview",
-        icon: `<?xml version="1.0" standalone="no"?>
-        <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 1024 1024">
-          <path d="M942.2 486.2C847.4 286.5 704.1 186 512 186c-192.2 0-335.4 100.5-430.2 300.3a60.3 60.3 0 0 0 0 51.5C176.6 737.5 319.9 838 512 838c192.2 0 335.4-100.5 430.2-300.3 7.7-16.2 7.7-35 0-51.5zM512 766c-161.3 0-279.4-81.8-362.7-254C232.6 339.8 350.7 258 512 258c161.3 0 279.4 81.8 362.7 254C791.5 684.2 673.4 766 512 766zm-4-430c-97.2 0-176 78.8-176 176s78.8 176 176 176 176-78.8 176-176-78.8-176-176-176zm0 288c-61.9 0-112-50.1-112-112s50.1-112 112-112 112 50.1 112 112-50.1 112-112 112z"/>
-        </svg>
-        `,
-        tip: "预览",
+        icon: previewIcon,
+        tip: "取消预览，进入编辑。",
         tipPosition: "s",
-        className: "flex-1",
+        className: "flex-1 preview-container",
+        afterClick() {
+          const previewButton = document.querySelector(
+            ".preview-container button"
+          );
+          if (previewButton.classList.contains("vditor-menu--current")) {
+            previewButton.setAttribute("aria-label", "取消预览，进入编辑。");
+          } else {
+            previewButton.setAttribute("aria-label", "进入预览");
+          }
+        },
       },
+      // {
+      //   name: "edit-mode",
+      //   className: "flex-1"
+      // },
 
       {
         name: "delete",
@@ -83,6 +94,21 @@
         tipPosition: "w",
       },
     ],
+    // outline: {
+    //   enable: true // 初始化显示大纲
+    // },
+    after() {
+      const { vditor } = window.vditor;
+      console.log("window.vditor", vditor);
+      vditor.preview.element.style.display = "block";
+      vditor["ir"].element.parentElement.style.display = "none";
+      vditor.preview.render(vditor);
+
+      const previewButton = document.querySelector(".preview-container button");
+      // previewButton.innerHTML = editIcon
+
+      previewButton.classList.add("vditor-menu--current");
+    },
     preview: {
       theme: {
         current: "ant-design",
@@ -99,7 +125,7 @@
       actions: ["desktop", "mp-wechat"],
     },
     height: "100vh",
-    // placeholder: "Take me notes in your new tab of browser."
+    placeholder: "Take me notes in your new tab of browser.",
   };
   window.vditor = new Vditor("vditor", window.options);
 })();
