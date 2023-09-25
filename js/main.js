@@ -58,6 +58,8 @@ const Storage = {
   let outlinEnable =  await Storage.get("setting_outline")
   outlinEnable = outlinEnable?.setting_outline
 
+  const oUl = document.querySelector('.menu-container ul');
+
   window.options = {
     toolbar: [
       {
@@ -113,13 +115,24 @@ const Storage = {
           );
           if (button.classList.contains("vditor-menu--current")) {
             button.setAttribute("aria-label", "取消预览，进入编辑。");
-            console.log("设置预览 storage");
             Storage.set("setting_preview", 1);
           } else {
-            console.log("取消预览 storage");
             Storage.remove("setting_preview");
             button.setAttribute("aria-label", "进入预览");
           }
+        },
+      },
+      {
+        name: "addfile",
+        tip: "新增文件",
+        icon: `<?xml version="1.0" standalone="no"?>
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 1024 1024">
+          <path d="M854.6 288.6L639.4 73.4c-6-6-14.1-9.4-22.6-9.4H192c-17.7 0-32 14.3-32 32v832c0 17.7 14.3 32 32 32h640c17.7 0 32-14.3 32-32V311.3c0-8.5-3.4-16.7-9.4-22.7zM790.2 326H602V137.8L790.2 326zm1.8 562H232V136h302v216a42 42 0 0 0 42 42h216v494zM544 472c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v108H372c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h108v108c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V644h108c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8H544V472z"/>
+        </svg>
+        `,
+        tipPosition: "w",
+        click() {
+          console.log("点击了确定，点击");
         },
       },
       {
@@ -129,7 +142,7 @@ const Storage = {
         confirm() {
           console.log("点击了确定，点击");
         },
-      },
+      },      
       {
         name: "content-theme",
         icon: `<?xml version="1.0" standalone="no"?>
@@ -158,11 +171,8 @@ const Storage = {
     async after() {
       const { setting_preview, setting_slide } = await Storage.get(["setting_preview", "setting_slide"]);
 
-      console.log('setting_slide', setting_slide, setting_preview)
-      // const { setting_preview } = await Storage.get("setting_preview");
       if (setting_preview === 1) {
         const { vditor } = window.vditor;
-        console.log("window.vditor", vditor);
         vditor.preview.element.style.display = "block";
         vditor["ir"].element.parentElement.style.display = "none";
         vditor.preview.render(vditor);
@@ -176,6 +186,8 @@ const Storage = {
         const menu = document.querySelector(".menu-container");
         menu.classList.remove("w-0")
       }
+
+      render()
     },
     preview: {
       theme: {
@@ -198,6 +210,8 @@ const Storage = {
   window.vditor = new Vditor("vditor", window.options);
 
   const menuContainer = document.querySelector(".menu-container");
+
+  // 事件委托，监听左侧点击
   menuContainer.addEventListener("click", function (event) {
     let currentLi = event.target;
     if (currentLi.tagName !== "LI") {
@@ -211,7 +225,22 @@ const Storage = {
 
     // 选中当前点击的
     currentLi.classList.add("active");
-
-    console.log("currentLi", currentLi.tagName);
   });
+
+  function render(){
+
+    const s = ''
+    
+
+    oUl.innerHTML = s
+  }
+
+  function template(text, time, active){
+    return `<li class="flex flex-column justify-between${active ?? ' active'}">
+    <div class="description">
+      ${text}
+    </div>
+    <time>${time}</time>
+  </li>`
+  }
 })();
