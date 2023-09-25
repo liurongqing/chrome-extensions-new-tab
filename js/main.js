@@ -1,6 +1,6 @@
 // 生成唯一  id
 function uuid() {
-  ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
+  return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
     (
       c ^
       (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
@@ -44,6 +44,7 @@ const Storage = {
 };
 
 (async function () {
+  let current = ""; // 当前选中值
   const editIcon = `<?xml version="1.0" standalone="no"?>
   <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 1024 1024">
     <path d="M257.7 752c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 0 0 0-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 0 0 9.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9zm67.4-174.4L687.8 215l73.3 73.3-362.7 362.6-88.9 15.7 15.6-89zM880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32z"/>
@@ -54,11 +55,10 @@ const Storage = {
     <path d="M942.2 486.2C847.4 286.5 704.1 186 512 186c-192.2 0-335.4 100.5-430.2 300.3a60.3 60.3 0 0 0 0 51.5C176.6 737.5 319.9 838 512 838c192.2 0 335.4-100.5 430.2-300.3 7.7-16.2 7.7-35 0-51.5zM512 766c-161.3 0-279.4-81.8-362.7-254C232.6 339.8 350.7 258 512 258c161.3 0 279.4 81.8 362.7 254C791.5 684.2 673.4 766 512 766zm-4-430c-97.2 0-176 78.8-176 176s78.8 176 176 176 176-78.8 176-176-78.8-176-176-176zm0 288c-61.9 0-112-50.1-112-112s50.1-112 112-112 112 50.1 112 112-50.1 112-112 112z"/>
   </svg>`;
 
+  let outlinEnable = await Storage.get("setting_outline");
+  outlinEnable = outlinEnable?.setting_outline;
 
-  let outlinEnable =  await Storage.get("setting_outline")
-  outlinEnable = outlinEnable?.setting_outline
-
-  const oUl = document.querySelector('.menu-container ul');
+  const oUl = document.querySelector(".menu-container ul");
 
   window.options = {
     toolbar: [
@@ -73,13 +73,21 @@ const Storage = {
         `,
         click() {
           const menu = document.querySelector(".menu-container");
-          if(menu.classList.contains("w-0")) {
+          if (menu.classList.contains("w-0")) {
             Storage.set("setting_slide", 1);
-            menu.classList.remove("w-0")
+            menu.classList.remove("w-0");
           } else {
             Storage.remove("setting_slide");
-            menu.classList.add("w-0")
+            menu.classList.add("w-0");
           }
+        },
+      },
+      {
+        name: "xxx",
+        tip: "清除测试",
+        click() {
+          console.log("清除成功");
+          Storage.clear();
         },
       },
       {
@@ -91,17 +99,15 @@ const Storage = {
         </svg>
         `,
         tipPosition: "s",
-        className: 'outline-container',
-        afterClick(){
-          const button = document.querySelector(
-            ".outline-container button"
-          );
+        className: "outline-container",
+        afterClick() {
+          const button = document.querySelector(".outline-container button");
           if (button.classList.contains("vditor-menu--current")) {
             Storage.set("setting_outline", 1);
           } else {
             Storage.remove("setting_outline");
           }
-        }
+        },
       },
       {
         name: "preview",
@@ -110,9 +116,7 @@ const Storage = {
         tipPosition: "s",
         className: "flex-1 preview-container",
         afterClick() {
-          const button = document.querySelector(
-            ".preview-container button"
-          );
+          const button = document.querySelector(".preview-container button");
           if (button.classList.contains("vditor-menu--current")) {
             button.setAttribute("aria-label", "取消预览，进入编辑。");
             Storage.set("setting_preview", 1);
@@ -131,9 +135,7 @@ const Storage = {
         </svg>
         `,
         tipPosition: "w",
-        click() {
-          console.log("点击了确定，点击");
-        },
+        click: add,
       },
       {
         name: "delete",
@@ -142,7 +144,7 @@ const Storage = {
         confirm() {
           console.log("点击了确定，点击");
         },
-      },      
+      },
       {
         name: "content-theme",
         icon: `<?xml version="1.0" standalone="no"?>
@@ -165,11 +167,14 @@ const Storage = {
     ],
 
     outline: {
-      enable: !!outlinEnable // 初始化显示大纲
+      enable: !!outlinEnable, // 初始化显示大纲
     },
 
     async after() {
-      const { setting_preview, setting_slide } = await Storage.get(["setting_preview", "setting_slide"]);
+      const { setting_preview, setting_slide } = await Storage.get([
+        "setting_preview",
+        "setting_slide",
+      ]);
 
       if (setting_preview === 1) {
         const { vditor } = window.vditor;
@@ -182,12 +187,12 @@ const Storage = {
         previewButton.classList.add("vditor-menu--current");
       }
 
-      if(setting_slide === 1) {
+      if (setting_slide === 1) {
         const menu = document.querySelector(".menu-container");
-        menu.classList.remove("w-0")
+        menu.classList.remove("w-0");
       }
-
-      render()
+      await init();
+      render();
     },
     preview: {
       theme: {
@@ -227,24 +232,59 @@ const Storage = {
     currentLi.classList.add("active");
   });
 
-  function render(){
-    // init();
-    const s = ''
-
-
-    oUl.innerHTML = s
+  async function add() {
+    const id = uuid();
+    current = id;
+    const { ids } = await Storage.get("ids");
+    Promise.all([Storage.set("current", id), Storage.set("ids", [...ids, id])]);
+    render();
   }
 
-  function init(){
+  async function remove(){}
+
+  async function render() {
+    const { ids } = await Storage.get(["ids"]);
+    if (ids?.length > 0) {
+      const s = ids
+        .reduce((acc, curr) => {
+          console.log("curr", curr, current);
+          acc.push(
+            template(curr, new Date().toLocaleString(), curr === current)
+          );
+          return acc;
+        }, [])
+        .join("");
+      oUl.innerHTML = s;
+    }
+  }
+
+  async function init() {
     // 初始化数据，第一次进来没有数据，则默认给个模板
+    const { ids } = await Storage.get("ids");
+    const { current: localCurrent } = await Storage.get("current");
+
+    if (localCurrent) {
+      current = localCurrent;
+    }
+
+    if (ids) {
+      if (!localCurrent) {
+        current = ids[0];
+      }
+      return;
+    }
+    const id = uuid();
+    await Promise.all([Storage.set("current", id), Storage.set("ids", [id])]);
   }
 
-  function template(text, time, active){
-    return `<li class="flex flex-column justify-between${active ?? ' active'}">
+  function template(text, time = "", active = false) {
+    console.log("active", active);
+    active = active ? " active" : "";
+    return `<li class="flex flex-column justify-between${active}">
     <div class="description">
       ${text}
     </div>
     <time>${time}</time>
-  </li>`
+  </li>`;
   }
 })();
