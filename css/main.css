@@ -12,7 +12,7 @@ ol {
   list-style: none;
 }
 .menu-container ul li {
-  height: 90px;
+  height: 80px;
   box-sizing: border-box;
   padding: 10px;
   cursor: default;
@@ -24,6 +24,12 @@ ol {
 }
 .flex-1 {
   flex: 1 1 0%;
+}
+.flex-column {
+  flex-direction: column;
+}
+.justify-between {
+  justify-content: space-between;
 }
 
 .menu-container.w-0 {
@@ -53,6 +59,23 @@ ol {
 
 .menu-container {
   transition: width 200ms;
+}
+
+.description {
+  display: -webkit-box;
+  font-weight: 500;
+  line-height: 1.5;
+  color: #494a4b;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+time {
+  color: #7d7d7d;
+  font-size: 11px;
+  text-align: right;
 }
 /**
  * 编辑器相关

@@ -1,4 +1,49 @@
-(function () {
+// 生成唯一  id
+function uuid() {
+  ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
+    (
+      c ^
+      (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
+    ).toString(16)
+  );
+}
+
+/**
+ * key：为ids，只在所有的id
+ * key: setting_preview 保持预览，还是编辑模式
+ * key: setting_slide 侧边打开还是关闭
+ * key: setting_outline
+ * key: current 当前选中的页面
+ * key： 为uuid，每条 markdown 内容
+ */
+const Storage = {
+  get(keys) {
+    if (!Array.isArray(keys)) {
+      keys = [keys];
+    }
+    return new Promise((resolve) => {
+      chrome.storage.sync.get(keys, resolve);
+    });
+  },
+  set(key, value) {
+    return new Promise((resolve) => {
+      chrome.storage.sync.set({ [key]: value }, resolve);
+    });
+  },
+  clear() {
+    chrome.storage.sync.clear();
+  },
+  remove(keys) {
+    if (!Array.isArray(keys)) {
+      keys = [keys];
+    }
+    return new Promise((resolve) => {
+      chrome.storage.sync.remove(keys, resolve);
+    });
+  },
+};
+
+(async function () {
   const editIcon = `<?xml version="1.0" standalone="no"?>
   <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 1024 1024">
     <path d="M257.7 752c2 0 4-.2 6-.5L431.9 722c2-.4 3.9-1.3 5.3-2.8l423.9-423.9a9.96 9.96 0 0 0 0-14.1L694.9 114.9c-1.9-1.9-4.4-2.9-7.1-2.9s-5.2 1-7.1 2.9L256.8 538.8c-1.5 1.5-2.4 3.3-2.8 5.3l-29.5 168.2a33.5 33.5 0 0 0 9.4 29.8c6.6 6.4 14.9 9.9 23.8 9.9zm67.4-174.4L687.8 215l73.3 73.3-362.7 362.6-88.9 15.7 15.6-89zM880 836H144c-17.7 0-32 14.3-32 32v36c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-36c0-17.7-14.3-32-32-32z"/>
@@ -9,8 +54,11 @@
     <path d="M942.2 486.2C847.4 286.5 704.1 186 512 186c-192.2 0-335.4 100.5-430.2 300.3a60.3 60.3 0 0 0 0 51.5C176.6 737.5 319.9 838 512 838c192.2 0 335.4-100.5 430.2-300.3 7.7-16.2 7.7-35 0-51.5zM512 766c-161.3 0-279.4-81.8-362.7-254C232.6 339.8 350.7 258 512 258c161.3 0 279.4 81.8 362.7 254C791.5 684.2 673.4 766 512 766zm-4-430c-97.2 0-176 78.8-176 176s78.8 176 176 176 176-78.8 176-176-78.8-176-176-176zm0 288c-61.9 0-112-50.1-112-112s50.1-112 112-112 112 50.1 112 112-50.1 112-112 112z"/>
   </svg>`;
 
+
+  let outlinEnable =  await Storage.get("setting_outline")
+  outlinEnable = outlinEnable?.setting_outline
+
   window.options = {
-    // mode: 'preview',
     toolbar: [
       {
         name: "filelist",
@@ -23,14 +71,13 @@
         `,
         click() {
           const menu = document.querySelector(".menu-container");
-          menu.classList.toggle("w-0");
-          // console.log('设置icon', )
-          // const filelist = window.vditor.vditor.options.toolbar.find(item => item.name === 'filelist')
-          // if(filelist) {
-          //   filelist.icon = 'xxx'
-          //   console.log(window.vditor.vditor.options.toolbar.find(item => item.name === 'filelist'))
-          // }
-          // this.icon = 'xxx'
+          if(menu.classList.contains("w-0")) {
+            Storage.set("setting_slide", 1);
+            menu.classList.remove("w-0")
+          } else {
+            Storage.remove("setting_slide");
+            menu.classList.add("w-0")
+          }
         },
       },
       {
@@ -42,6 +89,17 @@
         </svg>
         `,
         tipPosition: "s",
+        className: 'outline-container',
+        afterClick(){
+          const button = document.querySelector(
+            ".outline-container button"
+          );
+          if (button.classList.contains("vditor-menu--current")) {
+            Storage.set("setting_outline", 1);
+          } else {
+            Storage.remove("setting_outline");
+          }
+        }
       },
       {
         name: "preview",
@@ -50,21 +108,20 @@
         tipPosition: "s",
         className: "flex-1 preview-container",
         afterClick() {
-          const previewButton = document.querySelector(
+          const button = document.querySelector(
             ".preview-container button"
           );
-          if (previewButton.classList.contains("vditor-menu--current")) {
-            previewButton.setAttribute("aria-label", "取消预览，进入编辑。");
+          if (button.classList.contains("vditor-menu--current")) {
+            button.setAttribute("aria-label", "取消预览，进入编辑。");
+            console.log("设置预览 storage");
+            Storage.set("setting_preview", 1);
           } else {
-            previewButton.setAttribute("aria-label", "进入预览");
+            console.log("取消预览 storage");
+            Storage.remove("setting_preview");
+            button.setAttribute("aria-label", "进入预览");
           }
         },
       },
-      // {
-      //   name: "edit-mode",
-      //   className: "flex-1"
-      // },
-
       {
         name: "delete",
         tip: "删除",
@@ -75,7 +132,6 @@
       },
       {
         name: "content-theme",
-
         icon: `<?xml version="1.0" standalone="no"?>
       <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 1024 1024">
         <path d="M870 126H663.8c-17.4 0-32.9 11.9-37 29.3C614.3 208.1 567 246 512 246s-102.3-37.9-114.8-90.7a37.93 37.93 0 0 0-37-29.3H154a44 44 0 0 0-44 44v252a44 44 0 0 0 44 44h75v388a44 44 0 0 0 44 44h478a44 44 0 0 0 44-44V466h75a44 44 0 0 0 44-44V170a44 44 0 0 0-44-44zm-28 268H723v432H301V394H182V198h153.3c28.2 71.2 97.5 120 176.7 120s148.5-48.8 176.7-120H842v196z"/>
@@ -94,20 +150,32 @@
         tipPosition: "w",
       },
     ],
-    // outline: {
-    //   enable: true // 初始化显示大纲
-    // },
-    after() {
-      const { vditor } = window.vditor;
-      console.log("window.vditor", vditor);
-      vditor.preview.element.style.display = "block";
-      vditor["ir"].element.parentElement.style.display = "none";
-      vditor.preview.render(vditor);
 
-      const previewButton = document.querySelector(".preview-container button");
-      // previewButton.innerHTML = editIcon
+    outline: {
+      enable: !!outlinEnable // 初始化显示大纲
+    },
 
-      previewButton.classList.add("vditor-menu--current");
+    async after() {
+      const { setting_preview, setting_slide } = await Storage.get(["setting_preview", "setting_slide"]);
+
+      console.log('setting_slide', setting_slide, setting_preview)
+      // const { setting_preview } = await Storage.get("setting_preview");
+      if (setting_preview === 1) {
+        const { vditor } = window.vditor;
+        console.log("window.vditor", vditor);
+        vditor.preview.element.style.display = "block";
+        vditor["ir"].element.parentElement.style.display = "none";
+        vditor.preview.render(vditor);
+        const previewButton = document.querySelector(
+          ".preview-container button"
+        );
+        previewButton.classList.add("vditor-menu--current");
+      }
+
+      if(setting_slide === 1) {
+        const menu = document.querySelector(".menu-container");
+        menu.classList.remove("w-0")
+      }
     },
     preview: {
       theme: {
@@ -128,4 +196,22 @@
     placeholder: "Take me notes in your new tab of browser.",
   };
   window.vditor = new Vditor("vditor", window.options);
+
+  const menuContainer = document.querySelector(".menu-container");
+  menuContainer.addEventListener("click", function (event) {
+    let currentLi = event.target;
+    if (currentLi.tagName !== "LI") {
+      currentLi = currentLi.parentElement;
+    }
+
+    // 取消所有的选中
+    menuContainer.querySelectorAll("li").forEach((ele) => {
+      ele.classList.remove("active");
+    });
+
+    // 选中当前点击的
+    currentLi.classList.add("active");
+
+    console.log("currentLi", currentLi.tagName);
+  });
 })();
