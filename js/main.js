@@ -228,11 +228,15 @@ const Storage = {
   });
 
   function render(){
-
+    // init();
     const s = ''
-    
+
 
     oUl.innerHTML = s
+  }
+
+  function init(){
+    // 初始化数据，第一次进来没有数据，则默认给个模板
   }
 
   function template(text, time, active){
