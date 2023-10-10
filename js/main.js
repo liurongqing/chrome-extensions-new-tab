@@ -176,7 +176,8 @@ const Storage = {
         tip: "删除",
         tipPosition: "w",
         confirm() {
-          console.log("点击了确定，点击");
+          remove();
+          // console.log("点击了确定，点击");
         },
       },
       {
@@ -204,6 +205,7 @@ const Storage = {
       enable: !!outlinEnable, // 初始化显示大纲
     },
 
+    // 监听内容变化
     async input(value) {
       // console.log("input", value, current, !!value, value.length);
       if (current) {
@@ -262,6 +264,7 @@ const Storage = {
       }
       await init();
       render();
+      selectedItem();
     },
     preview: {
       theme: {
@@ -292,6 +295,10 @@ const Storage = {
       currentLi = currentLi.parentElement;
     }
 
+    if (currentLi.tagName !== "LI") {
+      return;
+    }
+
     // 取消所有的选中
     menuContainer.querySelectorAll("li").forEach((ele) => {
       ele.classList.remove("active");
@@ -299,8 +306,12 @@ const Storage = {
 
     // 选中当前点击的
     currentLi.classList.add("active");
+    current = currentLi.getAttribute("data-id");
+    Storage.set("current", current);
+    selectedItem();
   });
 
+  // 添加一个文档
   async function add() {
     const id = uuid();
     current = id;
@@ -311,15 +322,33 @@ const Storage = {
     } else {
       list.push(item);
     }
-    window.vditor.setValue("");
+    window.vditor.setValue("", true);
     window.vditor.focus();
 
     Promise.all([Storage.set("current", id), Storage.set("list", list)]);
     render();
+    selectedItem();
   }
 
-  async function remove() {}
+  // 删除一个文档
+  async function remove() {
+    if (current) {
+      let { list } = await Storage.get("list");
+      if (list?.length > 0) {
+        const newList = list?.filter((v) => v.id !== current);
+        Storage.set("list", newList);
+        Storage.remove(current);
+        if (newList?.length > 0) {
+          // 默认取第一个
+          current = newList.sort((a, b) => (a.time > b.time ? -1 : 1))[0].id;
+        }
+        render();
+        selectedItem();
+      }
+    }
+  }
 
+  // 渲染 li
   async function render() {
     const { list } = await Storage.get(["list"]);
     console.log("list", list);
@@ -330,6 +359,7 @@ const Storage = {
           console.log("curr", curr, current);
           acc.push(
             template(
+              curr.id,
               curr.content,
               new Date(curr.time).toLocaleString(),
               curr.id === current
@@ -348,28 +378,35 @@ const Storage = {
 
     if (!list) {
       add();
+      return;
     }
-    // const { ids } = await Storage.get("ids");
-    // const { current: localCurrent } = await Storage.get("current");
+    const { current: localCurrent } = await Storage.get("current");
 
-    // if (localCurrent) {
-    //   current = localCurrent;
-    // }
+    if (localCurrent) {
+      current = localCurrent;
+    }
 
-    // if (ids) {
-    //   if (!localCurrent) {
-    //     current = ids[0];
-    //   }
-    //   return;
-    // }
-    // const id = uuid();
-    // await Promise.all([Storage.set("current", id), Storage.set("ids", [id])]);
+    if (!localCurrent) {
+      current = list[0].id;
+    }
+
+    
   }
 
-  function template(text, time = "", active = false) {
-    console.log("active", active);
+  // 选中当前内容
+  async function selectedItem() {
+    if (current) {
+      const contentObj = await Storage.get(current);
+      const content = Object.values(contentObj);
+      window.vditor.setValue(content[0] ?? '', true);
+      window.vditor.focus();
+    }
+  }
+
+  // 通用 li 模板
+  function template(id, text, time = "", active = false) {
     active = active ? " active" : "";
-    return `<li class="flex flex-column justify-between${active}">
+    return `<li data-id="${id}" class="flex flex-column justify-between${active}">
     <div class="description">
       ${text}
     </div>
