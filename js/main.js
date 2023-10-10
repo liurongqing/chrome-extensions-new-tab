@@ -1,3 +1,7 @@
+/**
+ * 什么时候保存数据
+ * 编辑器自动保存
+ */
 // 生成唯一  id
 function uuid() {
   return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
@@ -9,12 +13,13 @@ function uuid() {
 }
 
 /**
- * key：为ids，只在所有的id
+ * 所有保存的 key 内容
+ * key: list，列表信息 [{id: 'xx', time: 'xx', content: 'xx'}] // content 截取 200 字符
  * key: setting_preview 保持预览，还是编辑模式
  * key: setting_slide 侧边打开还是关闭
- * key: setting_outline
+ * key: setting_outline 大纲
  * key: current 当前选中的页面
- * key： 为uuid，每条 markdown 内容
+ * key： 为 uuid，每条 markdown 内容
  */
 const Storage = {
   get(keys) {
@@ -82,14 +87,14 @@ const Storage = {
           }
         },
       },
-      {
-        name: "xxx",
-        tip: "清除测试",
-        click() {
-          console.log("清除成功");
-          Storage.clear();
-        },
-      },
+      // {
+      //   name: "xxx",
+      //   tip: "清除测试",
+      //   click() {
+      //     console.log("清除成功");
+      //     Storage.clear();
+      //   },
+      // },
       {
         name: "outline",
         tip: "大纲",
@@ -112,9 +117,9 @@ const Storage = {
       {
         name: "preview",
         icon: previewIcon,
-        tip: "取消预览，进入编辑。",
+        tip: "进入预览",
         tipPosition: "s",
-        className: "flex-1 preview-container",
+        className: "preview-container",
         afterClick() {
           const button = document.querySelector(".preview-container button");
           if (button.classList.contains("vditor-menu--current")) {
@@ -124,6 +129,35 @@ const Storage = {
             Storage.remove("setting_preview");
             button.setAttribute("aria-label", "进入预览");
           }
+        },
+      },
+      {
+        name: "delete001",
+        tipPosition: "s",
+        icon: `<?xml version="1.0" standalone="no"?>
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 1024 1024">
+          <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"/>
+          <path d="M623.6 316.7C593.6 290.4 554 276 512 276s-81.6 14.5-111.6 40.7C369.2 344 352 380.7 352 420v7.6c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V420c0-44.1 43.1-80 96-80s96 35.9 96 80c0 31.1-22 59.6-56.1 72.7-21.2 8.1-39.2 22.3-52.1 40.9-13.1 19-19.9 41.8-19.9 64.9V620c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8v-22.7a48.3 48.3 0 0 1 30.9-44.8c59-22.7 97.1-74.7 97.1-132.5.1-39.3-17.1-76-48.3-103.3zM472 732a40 40 0 1 0 80 0 40 40 0 1 0-80 0z"/>
+        </svg>
+        `,
+        click() {
+          console.log("清除成功");
+          Storage.clear();
+        },
+      },
+      {
+        name: "help",
+        tipPosition: "s",
+        icon: `<?xml version="1.0" standalone="no"?>
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 1024 1024">
+          <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"/>
+          <path d="M623.6 316.7C593.6 290.4 554 276 512 276s-81.6 14.5-111.6 40.7C369.2 344 352 380.7 352 420v7.6c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V420c0-44.1 43.1-80 96-80s96 35.9 96 80c0 31.1-22 59.6-56.1 72.7-21.2 8.1-39.2 22.3-52.1 40.9-13.1 19-19.9 41.8-19.9 64.9V620c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8v-22.7a48.3 48.3 0 0 1 30.9-44.8c59-22.7 97.1-74.7 97.1-132.5.1-39.3-17.1-76-48.3-103.3zM472 732a40 40 0 1 0 80 0 40 40 0 1 0-80 0z"/>
+        </svg>
+        `,
+        className: "flex-1",
+        click() {
+          console.log("清除成功");
+          Storage.clear();
         },
       },
       {
@@ -170,7 +204,42 @@ const Storage = {
       enable: !!outlinEnable, // 初始化显示大纲
     },
 
+    async input(value) {
+      // console.log("input", value, current, !!value, value.length);
+      if (current) {
+        // 保存到本地 list 与 详情中
+        const content = value.slice(0, 200);
+        // 找到 list 则更新，否则添加
+        const { list } = await Storage.get("list");
+
+        let newList = [];
+        if (list?.length > 0) {
+          let has = false;
+          newList = list.map((v) => {
+            if (v.id === current) {
+              has = true;
+              v.time = Date.now();
+              v.content = content;
+            }
+            return v;
+          });
+          // 如果没有则添加
+          if (!has) {
+            newList.push({ id: current, time: Date.now(), content });
+          }
+        } else {
+          newList = [{ id: current, time: Date.now(), content }];
+        }
+        Storage.set("list", newList);
+        render();
+        Storage.set(current, value);
+      }
+
+      //
+    },
+
     async after() {
+      // console.log('after...')
       const { setting_preview, setting_slide } = await Storage.get([
         "setting_preview",
         "setting_slide",
@@ -235,21 +304,36 @@ const Storage = {
   async function add() {
     const id = uuid();
     current = id;
-    const { ids } = await Storage.get("ids");
-    Promise.all([Storage.set("current", id), Storage.set("ids", [...ids, id])]);
+    let { list } = await Storage.get("list");
+    const item = { id, time: Date.now(), content: "" };
+    if (!list) {
+      list = [item];
+    } else {
+      list.push(item);
+    }
+    window.vditor.setValue("");
+    window.vditor.focus();
+
+    Promise.all([Storage.set("current", id), Storage.set("list", list)]);
     render();
   }
 
-  async function remove(){}
+  async function remove() {}
 
   async function render() {
-    const { ids } = await Storage.get(["ids"]);
-    if (ids?.length > 0) {
-      const s = ids
+    const { list } = await Storage.get(["list"]);
+    console.log("list", list);
+    if (list?.length > 0) {
+      const s = list
+        .sort((a, b) => (a.time > b.time ? -1 : 1))
         .reduce((acc, curr) => {
           console.log("curr", curr, current);
           acc.push(
-            template(curr, new Date().toLocaleString(), curr === current)
+            template(
+              curr.content,
+              new Date(curr.time).toLocaleString(),
+              curr.id === current
+            )
           );
           return acc;
         }, [])
@@ -260,21 +344,26 @@ const Storage = {
 
   async function init() {
     // 初始化数据，第一次进来没有数据，则默认给个模板
-    const { ids } = await Storage.get("ids");
-    const { current: localCurrent } = await Storage.get("current");
+    const { list } = await Storage.get("list");
 
-    if (localCurrent) {
-      current = localCurrent;
+    if (!list) {
+      add();
     }
+    // const { ids } = await Storage.get("ids");
+    // const { current: localCurrent } = await Storage.get("current");
 
-    if (ids) {
-      if (!localCurrent) {
-        current = ids[0];
-      }
-      return;
-    }
-    const id = uuid();
-    await Promise.all([Storage.set("current", id), Storage.set("ids", [id])]);
+    // if (localCurrent) {
+    //   current = localCurrent;
+    // }
+
+    // if (ids) {
+    //   if (!localCurrent) {
+    //     current = ids[0];
+    //   }
+    //   return;
+    // }
+    // const id = uuid();
+    // await Promise.all([Storage.set("current", id), Storage.set("ids", [id])]);
   }
 
   function template(text, time = "", active = false) {
