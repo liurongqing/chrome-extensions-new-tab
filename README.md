@@ -2,7 +2,7 @@
 
 Take quick notes in a new tab
 
-![home](./screenshot/home01.png)
+![home](./screenshot/home.png)
 
 ---
 
