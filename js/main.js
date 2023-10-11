@@ -204,6 +204,10 @@ const Storage = {
     // 监听内容变化
     async input(value) {
       // console.log("input", value, current, !!value, value.length);
+      // console.log('window.vditor.exportJSON(value)', window.vditor.exportJSON(value))
+
+      // window.vditor.tip('text001', 3)
+
       if (current) {
         // 保存到本地 list 与 详情中
         const content = value.slice(0, 200);
@@ -304,6 +308,7 @@ const Storage = {
     currentLi.classList.add("active");
     current = currentLi.getAttribute("data-id");
     Storage.set("current", current);
+    intoEdit();
     selectedItem();
   });
 
@@ -398,12 +403,25 @@ const Storage = {
 
   // 选中当前内容
   async function selectedItem() {
+    console.log("selectedItem current", current);
     if (current) {
       const contentObj = await Storage.get(current);
+      console.log("contentObj", contentObj);
       const content = Object.values(contentObj);
-      window.vditor.setValue(content[0] ?? "", true);
+      console.log("content", content[0]);
+      
+      window.vditor.setValue(content[0] ?? "1", true);
       window.vditor.focus();
     }
+  }
+
+  // 进入编辑模式
+  function intoEdit() {
+    const { vditor } = window.vditor;
+    const button = document.querySelector(".preview-container button");
+    button.classList.remove("vditor-menu--current");
+    vditor["ir"].element.parentElement.style.display = "block";
+    vditor.preview.element.style.display = "none";
   }
 
   // 通用 li 模板
