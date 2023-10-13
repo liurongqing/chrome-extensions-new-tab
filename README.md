@@ -1,5 +1,7 @@
 # chrome-extensions-new-tab
 
+https://chrome.google.com/webstore/detail/new-tab-quick-notes/ikjbbgeabinhepcghakgpcljhlhehalf?utm_source=ext_sidebar&hl=zh-CN
+
 Take quick notes in a new tab
 
 ![home](./screenshot/home.png)
